@@ -2,3 +2,4 @@
 local
 .ipynb_checkpoints
 .env
+secret.json
