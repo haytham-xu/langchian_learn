@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat UI</title>
+    <link rel="stylesheet" href="https://unpkg.com/iview/dist/styles/iview.css">
+</head>
+<body>
+    <div id="app">
+        <Slider v-model="value" range />
+        <!-- <i-row>
+            <i-col span="24">
+                <Card style="margin-bottom: 15px" v-for="message in messages" :key="message.id">
+                    <p slot="title">{{ message.sender }}</p>
+                    <p>{{ message.text }}</p>
+                </Card>
+            </i-col>
+        </i-row>
+        <i-row>
+            <i-col span="20">
+                <i-input v-model="input" placeholder="Type your message here"></i-input>
+            </i-col>
+            <i-col span="4">
+                <i-button @click="submit">Submit</i-button>
+            </i-col>
+        </i-row> -->
+    </div>
+
+    <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
+    <!-- <script src="https://unpkg.com/iview/dist/iview.min.js"></script> -->
+    <script type="text/javascript" src="viewuiplus.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                input: '',
+                messages: [],
+                value: [20, 50]
+            },
+            methods: {
+                /*
+                submit: function() {
+                    var message = this.input;
+                    this.input = '';
+                    this.messages.push({ sender: 'user', text: message });
+        
+                    fetch('http://127.0.0.1:5001/message', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            humanMessage: message
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.messages.push({ sender: 'server', text: data.message });
+                    });
+                } */
+            } 
+        });
+    </script>
+</body>
+</html>
+
+<!-- 
+// 安装 Vue CLI
+npm install -g @vue/cli
+
+// 创建一个新的 Vue 项目
+vue create my-project
+
+// 进入项目目录
+cd my-project
+
+// 安装 axios
+npm install axios
+
+// 在你的 Vue 组件中
+<template>
+  <div>
+    <div v-for="message in messages" :key="message.id">
+      <p>{{ message.sender }}: {{ message.text }}</p>
+    </div>
+    <input v-model="input" placeholder="Type your message here">
+    <button @click="submit">Submit</button>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      input: '',
+      messages: []
+    };
+  },
+  methods: {
+    submit() {
+      const message = this.input;
+      this.input = '';
+      this.messages.push({ sender: 'user', text: message });
+
+      axios.post('http://127.0.0.1:5001/message', {
+        humanMessage: message
+      })
+      .then(response => {
+        this.messages.push({ sender: 'server', text: response.data });
+      });
+    }
+  }
+};
+</script>
+
+
+
+ -->
