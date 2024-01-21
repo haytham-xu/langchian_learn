@@ -17,6 +17,7 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 
 from flask import Flask, request, send_from_directory
+from flask_cors import CORS
 import os, json
 from langchain_core.output_parsers import StrOutputParser
 class MessageSession:
@@ -47,27 +48,33 @@ MESSAGE_SESSION_MAP: Dict[str, MessageSession] = {}
 # app = Flask(__name__)
 app = Flask(__name__, static_folder='')
 app.secret_key = os.urandom(24)
+CORS(app)
 
-@app.route('/')
-def home():
-    return send_from_directory(app.static_folder, 'ui.html')
+# @app.route('/')
+# def home():
+#     return send_from_directory(app.static_folder, 'ui.html')
 
 @app.route('/message', methods=['POST'])
 def message():
-    human_message = request.form.get('humanMessage')
-    tab_id = str(request.cookies.get('tab_id'))
+    human_message = request.json.get('humanMessage')
+    tab_id = request.json.get('tabId')
+    print("tabId from frontend: ", tab_id)
     
     global MESSAGE_SESSION_MAP
     if tab_id not in MESSAGE_SESSION_MAP:
         tab_id = str(os.urandom(24).hex())
-        print(tab_id)
+        print("new tab: ", tab_id)
         message_session = MessageSession(tab_id)
         MESSAGE_SESSION_MAP[tab_id] = message_session
     else:
+        print("existing tab: ", tab_id)
         message_session = MESSAGE_SESSION_MAP[tab_id]
     res = message_session.involve(human_message)
     # print(res, type(res))
-    return json.dumps(str(res['text']))
+    # return json.dumps(str(res['text']))
+    return json.dumps({
+        "tabId": tab_id,
+        "text": res['text']})
     
     
 if __name__ == '__main__':
