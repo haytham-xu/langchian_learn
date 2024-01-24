@@ -5,26 +5,51 @@ load_dotenv("./secret/.env")
 from typing import Dict
 from langchain.chains import LLMChain
 from langchain.prompts import (ChatPromptTemplate,HumanMessagePromptTemplate,MessagesPlaceholder,SystemMessagePromptTemplate,)
-from langchain_openai import ChatOpenAI
+# from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 
 from flask import Flask, request
 from flask_cors import CORS
 import os, json
 
+from langchain.agents import AgentType, initialize_agent
+# , create_react_agent, create_json_agent, create_structured_chat_agent
+# from langchain_community.agent_toolkits.github.toolkit import GitHubToolkit
+# from langchain_community.utilities.github import GitHubAPIWrapper
+# from langchain_openai import ChatOpenAI
 
-from langchain.agents import AgentType, initialize_agent, create_react_agent, create_json_agent, create_structured_chat_agent
-from langchain_community.agent_toolkits.github.toolkit import GitHubToolkit
-from langchain_community.utilities.github import GitHubAPIWrapper
-from langchain_openai import ChatOpenAI
+from langchain.agents import AgentType, initialize_agent
+from agent_toolkits.coupon.toolkit import SAPToolkit
+from utilities.coupon import SAPAPIWrapper
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 class MessageSession:
     def __init__(self, tab_id):
         self.tab_id = tab_id
         self.create_timestamp = ""
         self.memory_count = 0
+
+        # llm = ChatGoogleGenerativeAI(model="gemini-pro", convert_system_message_to_human=True, temperature=0)
+
+        # sap = SAPAPIWrapper()
+# toolkit = SAPToolkit.from_sap_api_wrapper(sap)
+# tools = toolkit.get_tools()
+
+# for tool in tools:
+#     print(tool.name)
+
+# agent = initialize_agent(
+#     tools=tools,
+#     llm=llm,
+#     agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+#     verbose=True,
+# )
+
+
+# output = agent.run("""Spring Festival is coming, create a coupon for the pants, valid from 9th Feb to 18th Feb 2024""")
         
-        self.llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
+        # self.llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
+        self.llm = ChatGoogleGenerativeAI(model="gemini-pro", convert_system_message_to_human=True, temperature=0)
         self.prompt = ChatPromptTemplate(
             messages=[
                 SystemMessagePromptTemplate.from_template("You are a nice chatbot having a conversation with a human."),
@@ -33,8 +58,11 @@ class MessageSession:
             ]
         )
         self.chat_history = MessagesPlaceholder(variable_name="chat_history")
-        github = GitHubAPIWrapper()
-        toolkit = GitHubToolkit.from_github_api_wrapper(github)
+        # github = GitHubAPIWrapper()
+        # toolkit = GitHubToolkit.from_github_api_wrapper(github)
+        # self.tools = toolkit.get_tools()
+        sap = SAPAPIWrapper()
+        toolkit = SAPToolkit.from_sap_api_wrapper(sap)
         self.tools = toolkit.get_tools()
 
         self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
@@ -79,5 +107,3 @@ def message():
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
-
-
