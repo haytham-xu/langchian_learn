@@ -4,3 +4,5 @@ local
 .env
 secret.json
 *.pem
+modelt/output_folder/releaselog-20240223.1.txt
+modelt/output_file.zip
